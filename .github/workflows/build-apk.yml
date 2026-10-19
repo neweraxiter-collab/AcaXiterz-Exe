@@ -1,1 +1,38 @@
 
+name: Build AcaXiterz Exe APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Extract project ZIP
+        run: |
+          unzip -o AcaXiterz_Exe_Phone_Build.zip -d extracted
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.9"
+
+      - name: Build APK
+        working-directory: extracted/AcaXiterz_Exe
+        run: gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: AcaXiterz-Exe-APK
+          path: extracted/AcaXiterz_Exe/app/build/outputs/apk/debug/app-debug.apk
+          
